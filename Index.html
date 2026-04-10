@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HjemFri — Sælg dit hus selv</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9f8f6; color: #1a1a1a; }
+
+  /* NAV */
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #fff; border-bottom: 1px solid #e8e6e0; position: sticky; top: 0; z-index: 100; }
+  .logo { font-size: 20px; font-weight: 600; color: #1a1a1a; text-decoration: none; }
+  .logo span { color: #1D9E75; }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a { font-size: 14px; color: #555; text-decoration: none; }
+  .nav-links a:hover { color: #1a1a1a; }
+  .btn { padding: 9px 20px; border-radius: 8px; border: 1px solid #d0cec8; font-size: 14px; cursor: pointer; background: #fff; color: #1a1a1a; text-decoration: none; display: inline-block; transition: background 0.15s; }
+  .btn:hover { background: #f3f2ee; }
+  .btn-primary { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+  .btn-primary:hover { background: #178a63; }
+
+  /* HERO */
+  .hero { text-align: center; padding: 72px 24px 56px; background: #fff; border-bottom: 1px solid #e8e6e0; }
+  .hero h1 { font-size: 40px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; line-height: 1.2; }
+  .hero h1 span { color: #1D9E75; }
+  .hero p { font-size: 17px; color: #666; max-width: 520px; margin: 0 auto 32px; line-height: 1.7; }
+  .savings-badge { display: inline-block; background: #E1F5EE; color: #085041; font-size: 13px; font-weight: 500; padding: 6px 16px; border-radius: 99px; margin-bottom: 28px; border: 1px solid #5DCAA5; }
+  .search-bar { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+  .search-bar input { flex: 1; padding: 12px 16px; border: 1px solid #d0cec8; border-radius: 8px; font-size: 15px; outline: none; }
+  .search-bar input:focus { border-color: #1D9E75; }
+
+  /* STATS */
+  .stats { display: flex; justify-content: center; gap: 48px; padding: 32px 24px; background: #f9f8f6; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 700; color: #1D9E75; }
+  .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+  /* LISTINGS */
+  .section { padding: 48px 32px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .section-header h2 { font-size: 22px; font-weight: 600; }
+  .section-header a { font-size: 14px; color: #1D9E75; text-decoration: none; }
+  .listings { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid #e8e6e0; border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .card-img { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+  .img1 { background: linear-gradient(135deg, #B5D4F4, #85B7EB); }
+  .img2 { background: linear-gradient(135deg, #9FE1CB, #5DCAA5); }
+  .img3 { background: linear-gradient(135deg, #FAC775, #EF9F27); }
+  .img4 { background: linear-gradient(135deg, #F4C0D1, #ED93B1); }
+  .new-badge { position: absolute; top: 12px; left: 12px; background: #1D9E75; color: #fff; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+  .card-body { padding: 16px; }
+  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .card-sub { font-size: 13px; color: #888; margin-bottom: 10px; }
+  .card-price { font-size: 18px; font-weight: 700; color: #1D9E75; margin-bottom: 12px; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: #f3f2ee; color: #666; border: 1px solid #e8e6e0; }
+  .card-actions { display: flex; gap: 8px; }
+  .card-actions .btn { flex: 1; text-align: center; font-size: 13px; padding: 8px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 24px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; }
+  .modal h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .modal p { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
+  .modal input, .modal textarea, .modal select { width: 100%; padding: 10px 14px; border: 1px solid #d0cec8; border-radius: 8px; font-size: 14px; margin-bottom: 14px; font-family: inherit; outline: none; }
+  .modal input:focus, .modal textarea:focus { border-color: #1D9E75; }
+  .modal textarea { height: 90px; resize: none; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-close { position: absolute; top: 16px; right: 20px; font-size: 22px; cursor: pointer; color: #888; background: none; border: none; }
+
+  /* SELL BANNER */
+  .sell-banner { margin: 0 32px 48px; padding: 32px; background: #E1F5EE; border-radius: 16px; border: 1px solid #5DCAA5; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .sell-banner h2 { font-size: 22px; font-weight: 600; color: #085041; margin-bottom: 8px; }
+  .sell-banner p { font-size: 15px; color: #0F6E56; max-width: 420px; line-height: 1.6; }
+
+  /* SELL FORM */
+  .sell-section { background: #fff; border-top: 1px solid #e8e6e0; padding: 56px 32px; display: none; }
+  .sell-section.open { display: block; }
+  .sell-section h2 { font-size: 26px; font-weight: 600; margin-bottom: 8px; }
+  .sell-section .sub { font-size: 15px; color: #888; margin-bottom: 32px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 680px; }
+  .form-grid input, .form-grid select, .form-grid textarea { padding: 10px 14px; border: 1px solid #d0cec8; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; }
+  .form-grid input:focus, .form-grid select:focus { border-color: #1D9E75; }
+  .form-full { grid-column: 1 / -1; }
+  .form-grid textarea { height: 100px; resize: none; }
+  .upload-box { grid-column: 1 / -1; border: 2px dashed #d0cec8; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; color: #888; font-size: 14px; transition: border-color 0.2s; }
+  .upload-box:hover { border-color: #1D9E75; color: #1D9E75; }
+  .upload-box p { margin-top: 8px; font-size: 12px; }
+  .form-submit { margin-top: 24px; }
+
+  /* HOW IT WORKS */
+  .how { background: #f9f8f6; padding: 56px 32px; }
+  .how h2 { font-size: 26px; font-weight: 600; text-align: center; margin-bottom: 40px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; max-width: 800px; margin: 0 auto; }
+  .step { background: #fff; border-radius: 12px; padding: 24px 20px; text-align: center; border: 1px solid #e8e6e0; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: #1D9E75; color: #fff; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .step h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 13px; color: #888; line-height: 1.6; }
+
+  /* FOOTER */
+  footer { background: #1a1a1a; color: #aaa; padding: 32px; text-align: center; font-size: 13px; }
+  footer span { color: #1D9E75; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Hjem<span>Fri</span></a>
+  <div class="nav-links">
+    <a href="#boliger">Boliger til salg</a>
+    <a href="#saelg">Sælg dit hus</a>
+    <a href="#">Om os</a>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <a href="#" class="btn">Log ind</a>
+    <a href="#" class="btn btn-primary" onclick="document.getElementById('sell-section').classList.add('open'); document.getElementById('sell-section').scrollIntoView({behavior:'smooth'}); return false;">Sæt til salg</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="savings-badge">✓ Spar typisk 80.000–150.000 kr. i mæglersalær</div>
+  <h1>Sælg dit hus<br><span>uden mægler</span></h1>
+  <p>Upload billeder, beskriv dit hjem og hold fremvisninger selv. Det er nemmere end du tror — og du beholder hele fortjenesten.</p>
+  <div class="search-bar">
+    <input type="text" placeholder="Søg by, postnummer eller adresse..." id="search-input" />
+    <button class="btn btn-primary" onclick="alert('Søgefunktion kommer snart!')">Søg boliger</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">1.240</div><div class="stat-label">boliger solgt</div></div>
+  <div class="stat"><div class="stat-num">112.000 kr.</div><div class="stat-label">gennemsnitsbesparelse</div></div>
+  <div class="stat"><div class="stat-num">4,8 / 5</div><div class="stat-label">tilfredshed</div></div>
+  <div class="stat"><div class="stat-num">38 dage</div><div class="stat-label">gennemsnitlig salgstid</div></div>
+</div>
+
+<!-- LISTINGS -->
+<section class="section" id="boliger">
+  <div class="section-header">
+    <h2>Boliger til salg</h2>
+    <a href="#">Se alle boliger →</a>
+  </div>
+  <div class="listings">
+    <div class="card">
+      <div class="card-img img1"><span class="new-badge">Ny</span>🏡</div>
+      <div class="card-body">
+        <div class="card-title">Ahornvej 12, Aarhus N</div>
+        <div class="card-sub">125 m² · Parcelhus · 4 vær. · 1972</div>
+        <div class="card-price">3.450.000 kr.</div>
+        <div class="card-tags"><span class="tag">Nyt køkken</span><span class="tag">Have</span><span class="tag">Garage</span></div>
+        <div class="card-actions">
+          <button class="btn" onclick="alert('Billedgalleri åbner her')">Se billeder</button>
+          <button class="btn btn-primary" onclick="openBooking('Ahornvej 12, Aarhus N')">Book fremvisning</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img img2">🏠</div>
+      <div class="card-body">
+        <div class="card-title">Skovbrynet 4, Odense SV</div>
+        <div class="card-sub">89 m² · Rækkehus · 3 vær. · 1988</div>
+        <div class="card-price">2.100.000 kr.</div>
+        <div class="card-tags"><span class="tag">Stille gade</span><span class="tag">Altan</span><span class="tag">Nyt bad</span></div>
+        <div class="card-actions">
+          <button class="btn" onclick="alert('Billedgalleri åbner her')">Se billeder</button>
+          <button class="btn btn-primary" onclick="openBooking('Skovbrynet 4, Odense SV')">Book fremvisning</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img img3">🏘</div>
+      <div class="card-body">
+        <div class="card-title">Birkevang 7, København K</div>
+        <div class="card-sub">72 m² · Ejerlejlighed · 2 vær. · 1965</div>
+        <div class="card-price">4.200.000 kr.</div>
+        <div class="card-tags"><span class="tag">Indre by</span><span class="tag">Elevator</span><span class="tag">Parkeringsplads</span></div>
+        <div class="card-actions">
+          <button class="btn" onclick="alert('Billedgalleri åbner her')">Se billeder</button>
+          <button class="btn btn-primary" onclick="openBooking('Birkevang 7, København K')">Book fremvisning</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img img4"><span class="new-badge">Ny</span>🏰</div>
+      <div class="card-body">
+        <div class="card-title">Rosenvej 22, Vejle</div>
+        <div class="card-sub">160 m² · Villa · 5 vær. · 2005</div>
+        <div class="card-price">5.100.000 kr.</div>
+        <div class="card-tags"><span class="tag">Pool</span><span class="tag">Stor have</span><span class="tag">Dobbelgarage</span></div>
+        <div class="card-actions">
+          <button class="btn" onclick="alert('Billedgalleri åbner her')">Se billeder</button>
+          <button class="btn btn-primary" onclick="openBooking('Rosenvej 22, Vejle')">Book fremvisning</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELL BANNER -->
+<div class="sell-banner" id="saelg">
+  <div>
+    <h2>Vil du sælge dit hjem selv?</h2>
+    <p>Opret en gratis annonce på 10 minutter. Upload billeder, sæt din pris og lad interesserede købers booke fremvisning direkte i din kalender.</p>
+  </div>
+  <button class="btn btn-primary" style="padding:14px 28px;font-size:15px;" onclick="document.getElementById('sell-section').classList.add('open'); document.getElementById('sell-section').scrollIntoView({behavior:'smooth'})">Kom i gang gratis →</button>
+</div>
+
+<!-- SELL FORM -->
+<section class="sell-section" id="sell-section">
+  <h2>Opret din boligannonce</h2>
+  <p class="sub">Udfyld oplysningerne nedenfor — det tager ca. 10 minutter.</p>
+  <div class="form-grid">
+    <input type="text" placeholder="Adresse" />
+    <input type="text" placeholder="Postnummer og by" />
+    <input type="number" placeholder="Pris (kr.)" />
+    <input type="number" placeholder="Størrelse (m²)" />
+    <select>
+      <option value="">Boligtype</option>
+      <option>Parcelhus</option>
+      <option>Rækkehus</option>
+      <option>Ejerlejlighed</option>
+      <option>Villa</option>
+      <option>Sommerhus</option>
+    </select>
+    <input type="number" placeholder="Antal værelser" />
+    <textarea class="form-full" placeholder="Beskriv din bolig — hvad er særligt ved den?"></textarea>
+    <div class="upload-box form-full" onclick="alert('Her kan du uploade dine billeder!')">
+      <div style="font-size:32px;">📸</div>
+      <strong style="font-size:15px;color:#1D9E75;">Klik for at uploade billeder</strong>
+      <p>Upload op til 20 billeder · JPG eller PNG · maks. 10 MB pr. billede</p>
+    </div>
+  </div>
+  <div class="form-submit">
+    <button class="btn btn-primary" style="padding:12px 32px;font-size:15px;" onclick="alert('Tillykke! Din annonce er nu oprettet og synlig for købere.')">Publicer annonce</button>
+    <button class="btn" style="margin-left:10px;" onclick="document.getElementById('sell-section').classList.remove('open')">Annuller</button>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <h2>Sådan fungerer HjemFri</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Upload billeder</h3>
+      <p>Tag fotos af dit hjem og upload dem direkte fra din telefon eller computer.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Beskriv boligen</h3>
+      <p>Angiv pris, størrelse, antal rum og hvad der gør din bolig særlig.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Hold fremvisning</h3>
+      <p>Interesserede købers booker tid direkte i din kalender.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Sælg selv</h3>
+      <p>Accepter et bud og spar mæglersalæret. Du beholder hele fortjenesten.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong style="color:#fff;">Hjem<span>Fri</span></strong> — Sælg dit hus uden mægler</p>
+  <p style="margin-top:8px;">Dette er en prototype · Ikke et rigtigt produkt endnu</p>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <h3>Book fremvisning</h3>
+    <p id="modal-address" style="color:#1D9E75;font-weight:500;margin-bottom:16px;"></p>
+    <p>Vælg en dato og tid der passer dig, og skriv et kort besked til sælgeren.</p>
+    <input type="text" placeholder="Dit navn" />
+    <input type="email" placeholder="Din e-mail" />
+    <input type="tel" placeholder="Dit telefonnummer" />
+    <input type="date" />
+    <select>
+      <option>Vælg tidspunkt</option>
+      <option>10:00</option>
+      <option>11:00</option>
+      <option>13:00</option>
+      <option>14:00</option>
+      <option>16:00</option>
+      <option>17:00</option>
+    </select>
+    <textarea placeholder="Besked til sælger (valgfrit)"></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeBooking()">Annuller</button>
+      <button class="btn btn-primary" onclick="confirmBooking()">Bekræft fremvisning</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openBooking(address) {
+  document.getElementById('modal-address').textContent = address;
+  document.getElementById('booking-modal').classList.add('open');
+}
+function closeBooking() {
+  document.getElementById('booking-modal').classList.remove('open');
+}
+function confirmBooking() {
+  closeBooking();
+  alert('Din fremvisning er bookt! Sælgeren vil bekræfte inden for 24 timer.');
+}
+</script>
+
+</body>
+</html>
